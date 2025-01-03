@@ -1,0 +1,14 @@
+{
+    "appenders": { 
+        "server": { 
+            "type": "file", 
+            "filename": "./logging/log/index.log" 
+        } 
+    },
+    "categories": { 
+        "default": { 
+            "appenders": ["server"], 
+            "level": "debug" 
+        } 
+    }
+}
