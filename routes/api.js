@@ -2,7 +2,13 @@ const express = require("express");
 const router = express.Router();
 
 router.get("/get", (req, res, next) => {
-  res.send({ message: "Hello World" });
+    const response = req.query.message;
+
+    if(response === ""){
+        res.status(400).send("Bad Request");
+    }
+    
+    res.send(response);
 });
 
 router.use(express.json());
