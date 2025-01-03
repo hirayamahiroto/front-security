@@ -1,14 +1,23 @@
 const express = require("express");
+const logger = require("./../logging/index");
 const router = express.Router();
 
+router.use(express.json());
 router.get("/get", (req, res, next) => {
-    const response = req.query.message;
+    logger.debug("GET /get endpoint called");
 
-    if(response === ""){
-        res.status(400).send("Bad Request");
+    res.setHeader("X-Timestamp", Date.now());
+
+    let message = req.query.message;
+    const lang = req.headers["x-lang"];
+
+    if (!message) {
+        res.status(400);
+        message = lang === "ja" ? "リクエストが不正です" : "Bad Request";
     }
-    
-    res.send(response);
+
+
+    res.send({message});
 });
 
 router.use(express.json());
