@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ユーザー情報</title>
+    <style>
+      .user-container {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+      .user-info {
+        border: 1px solid #ddd;
+        padding: 15px;
+        margin-bottom: 20px;
+        border-radius: 5px;
+      }
+      .user-avatar {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        object-fit: cover;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="user-container">
+      <h1>ユーザープロフィール</h1>
+
+      <div class="user-info">
+        <img src="placeholder-avatar.jpg" alt="ユーザーアバター" class="user-avatar" />
+        <h2 id="userName">ユーザー名</h2>
+        <p id="userEmail">メールアドレス: example@email.com</p>
+        <p id="userJoinDate">登録日: 2024/03/21</p>
+        <p id="userBio">自己紹介: ここにユーザーの自己紹介文が入ります。</p>
+      </div>
+
+      <div class="user-actions">
+        <button onclick="editProfile()">プロフィール編集</button>
+        <button onclick="logout()">ログアウト</button>
+      </div>
+    </div>
+
+  </body>
+</html>
