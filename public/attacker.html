@@ -6,8 +6,14 @@
     <title>アタッカーページ</title>
 
     <script>
-      const userInfo = frm.document.querySelector("#userInfo");
-      console.log(userInfo.textContent);
+      function load() {
+        try {
+          const userInfo = frm.document.querySelector("#userInfo");
+          console.log(userInfo.textContent);
+        } catch (e) {
+          console.error("エラーが発生しました:", e);
+        }
+      }
     </script>
   </head>
   <body>
@@ -19,9 +25,9 @@
     <iframe
       name="frm"
       onload="load()"
-      src="http://site.example:3000/user.html"
-      wiodth="100%"
+      src="http://localhost:3000/user.html"
+      width="100%"
       height="100%"
-    />
+    ></iframe>
   </body>
 </html>
