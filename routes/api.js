@@ -26,4 +26,8 @@ router.post("/post", (req, res, next) => {
   res.json({ status: "success", data: body });
 });
 
+router.get("/attack", (req, res, next) => {
+  res.send("<script>alert('attack');</script>");
+});
+
 module.exports = router;
