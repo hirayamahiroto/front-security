@@ -4,7 +4,7 @@ const router = express.Router();
 
 router.use(express.json());
 router.get("/get", (req, res, next) => {
-  const message = req.query.message;
+  let message = req.query.message;
   const lang = req.headers["x-lang"];
 
   if (!message) {
