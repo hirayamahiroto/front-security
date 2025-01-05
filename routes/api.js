@@ -4,11 +4,7 @@ const router = express.Router();
 
 router.use(express.json());
 router.get("/get", (req, res, next) => {
-  logger.debug("GET /get endpoint called");
-
-  res.setHeader("X-Timestamp", Date.now());
-
-  let message = req.query.message;
+  const message = req.query.message;
   const lang = req.headers["x-lang"];
 
   if (!message) {
@@ -16,7 +12,11 @@ router.get("/get", (req, res, next) => {
     message = lang === "ja" ? "リクエストが不正です" : "Bad Request";
   }
 
-  res.send({ message });
+  res.send({
+    status: "200",
+    message: message,
+    lang: lang,
+  });
 });
 
 router.use(express.json());
