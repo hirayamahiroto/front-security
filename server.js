@@ -1,13 +1,13 @@
 const express = require("express");
 const apiRouter = require("./routes/api");
-const corsMiddleware = require("./middleware/cors");
+const { cors } = require("./middleware");
 
 const app = express();
 const port = 3000;
 
 app.use(express.static("public"));
 
-app.use("/api", corsMiddleware, apiRouter);
+app.use("/api", cors, apiRouter);
 
 // サーバを起動する
 app.listen(port, () => {
