@@ -1,6 +1,6 @@
 const corsMiddleware = (req, res, next) => {
   // 開発環境と本番環境で分けることも可能
-  const allowedOrigins = ["http://localhost:3000", "https://your-production-domain.com"];
+  const allowedOrigins = ["http://localhost:3000", "https://site.example:3000"];
 
   const origin = req.headers.origin;
   if (allowedOrigins.includes(origin)) {
