@@ -6,5 +6,16 @@
     <h1>XSS 認証検証用ページ</h1>
     <div id="result"></div>
     <a id="link" href="#">認証チェック</a>
+    <script>
+      const url = new URL(location.href);
+      const message = url.searchParams.get("message");
+
+      console.log(message);
+
+      if (message !== null) {
+        console.log(message);
+        document.querySelector("#result").innerHTML = message;
+      }
+    </script>
   </body>
 </html>
