@@ -5,7 +5,7 @@
   <body>
     <h1>XSS 認証検証用ページ</h1>
     <div id="result"></div>
-    <a id="link" href="#">認証チェック</a>
+    <a id="link" href="#">認証チ ェック</a>
     <script>
       const url = new URL(location.href);
       const message = url.searchParams.get("message");
@@ -14,7 +14,20 @@
 
       if (message !== null) {
         console.log(message);
-        document.querySelector("#result").innerHTML = message;
+
+        // NODEについて：https://qiita.com/KDE_SPACE/items/e21bb31dd4d9c162c4a6
+
+        // ーーーーーーーーーーーー　NG　ーーーーーーーーーーーー
+        // DOMを操作するときはinnerHTMLすると、要素nodeに対してHTMLを挿入することができる
+        // そのため、クエリ文字列に<img src="x" onerror="alert('XSS')">のようなコードを挿入すると、
+        // ページが読み込まれたときにscriptが実行される
+
+        // document.querySelector("#result").innerHTML = message;
+
+        // ーーーーーーーーーーーー　OK　ーーーーーーーーーーーー
+        // 文字列をページに表示したい時、テキストnodeとして扱う
+        // そうすると、HTMLとして解釈されず、テキストとして表示される（Scriptは実行されない）
+        document.querySelector("#result").textContent = message;
       }
     </script>
   </body>
