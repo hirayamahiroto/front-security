@@ -1,4 +1,4 @@
-const corsMiddleware = require("./cors/cors");
+const corsMiddleware = require("./cros");
 const publicMiddleware = require("./public");
 
 module.exports = {
