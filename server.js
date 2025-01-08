@@ -1,4 +1,5 @@
 const express = require("express");
+const crypto = require("crypto");
 const apiRouter = require("./routes/api");
 const { cors } = require("./middleware");
 
@@ -11,7 +12,12 @@ app.use("/api", cors, apiRouter);
 // ejsの設定
 app.set("view engine", "ejs");
 app.get("/csp", (req, res, next) => {
-  res.header("Content-Security-Policy", "script-src 'self'");
+  // CSPで使用するnonceを生成
+  const nonce = crypto.randomBytes(16).toString("hex");
+  res.locals.nonce = nonce;
+
+  // CSPのヘッダーを設定
+  res.header("Content-Security-Policy", `script-src 'nonce-${nonce}'`);
   res.render("csp");
 });
 
