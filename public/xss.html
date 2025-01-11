@@ -4,31 +4,47 @@
   </head>
   <body>
     <h1>XSS 認証検証用ページ</h1>
-    <div id="result"></div>
+
+    <div style="display: flex; flex-direction: column; align-items: center">
+      <h2>サーチパラメータ</h2>
+
+      <div
+        id="result"
+        style="
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          width: 30%;
+          height: 50px;
+          background-color: #f0f0f0;
+          text-align: center;
+          line-height: 50px;
+        "
+      ></div>
+    </div>
+
     <a id="link" href="#">認証チ ェック</a>
     <script>
       const url = new URL(location.href);
       const message = url.searchParams.get("message");
 
-      console.log(message);
+      // if (message !== null) {
+      // NODEについて：https://qiita.com/KDE_SPACE/items/e21bb31dd4d9c162c4a6
 
-      if (message !== null) {
-        console.log(message);
+      // http://localhost:3000/xss.html?message=%3Cimg%20src%20onerror=alert(%27xss%27)%3E
 
-        // NODEについて：https://qiita.com/KDE_SPACE/items/e21bb31dd4d9c162c4a6
+      // ーーーーーーーーーーーー　NG　ーーーーーーーーーーーー
+      // DOMを操作するときはinnerHTMLすると、要素nodeに対してHTMLを挿入することができる
+      // そのため、クエリ文字列に<img src="x" onerror="alert('XSS')">のようなコードを挿入すると、
+      // ページが読み込まれたときにscriptが実行される
 
-        // ーーーーーーーーーーーー　NG　ーーーーーーーーーーーー
-        // DOMを操作するときはinnerHTMLすると、要素nodeに対してHTMLを挿入することができる
-        // そのため、クエリ文字列に<img src="x" onerror="alert('XSS')">のようなコードを挿入すると、
-        // ページが読み込まれたときにscriptが実行される
+      document.querySelector("#result").innerHTML = message;
 
-        // document.querySelector("#result").innerHTML = message;
-
-        // ーーーーーーーーーーーー　OK　ーーーーーーーーーーーー
-        // 文字列をページに表示したい時、テキストnodeとして扱う
-        // そうすると、HTMLとして解釈されず、テキストとして表示される（Scriptは実行されない）
-        document.querySelector("#result").textContent = message;
-      }
+      // ーーーーーーーーーーーー　OK　ーーーーーーーーーーーー
+      // 文字列をページに表示したい時、テキストnodeとして扱う
+      // そうすると、HTMLとして解釈されず、テキストとして表示される（Scriptは実行されない）
+      // document.querySelector("#result").textContent = message;
+      // }
     </script>
   </body>
 </html>
