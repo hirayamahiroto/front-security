@@ -26,21 +26,23 @@ router.use(cookieParser());
 
 let sessionData = {};
 
-router.get("/login", (req, res, next) => {
-  const { username, password } = req.body;
+router.post("/login", (req, res, next) => {
+  const reqBody = req.body;
 
-  if (!username || !password) {
+  console.log(reqBody);
+
+  if (!reqBody.username || !reqBody.password) {
     res.status(400).send("ユーザー名またはパスワードが入力されていません");
     return;
   }
 
-  if (username !== "admin" && password !== "password") {
+  if (reqBody.username !== "admin" && reqBody.password !== "password") {
     res.status(400).send("ユーザー名またはパスワードが間違っています");
     return;
   }
 
-  session = req.session;
-  session.sessionData = { username: username };
+  let session = req.session;
+  session.sessionData = { username: reqBody.username };
   res.redirect("/csrf_login_success.html");
 });
 
