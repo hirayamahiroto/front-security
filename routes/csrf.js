@@ -43,3 +43,5 @@ router.get("/login", (req, res, next) => {
   session.sessionData = { username: username };
   res.redirect("/csrf_login_success.html");
 });
+
+module.exports = router;
