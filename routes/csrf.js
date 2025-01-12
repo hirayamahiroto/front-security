@@ -1,6 +1,7 @@
 const express = require("express");
 const session = require("express-session");
 const cookieParser = require("cookie-parser");
+const crypto = require("crypto");
 const router = express.Router();
 
 router.use(cookieParser());
@@ -42,8 +43,39 @@ router.post("/login", (req, res, next) => {
   }
 
   let session = req.session;
-  session.sessionData = { username: reqBody.username };
-  res.redirect("/csrf_login_success.html");
+  session.username = reqBody.username;
+  session.password = reqBody.password;
+
+  // セッションにCSRFトークンを設定
+  session.csrfToken = crypto.randomUUID();
+  console.log(session.csrfToken);
+
+  // クッキーにCSRFトークンを設定
+  res.cookie("csrfToken", session.csrfToken);
+
+  // CSRF検証ページにリダイレクト
+  res.redirect("/csrf_test.html");
+});
+
+router.post("/remit", (req, res, next) => {
+  // どのようなリクエストが来ているかを確認する
+  console.log(req.session);
+  console.log(req.url);
+  console.log(req.body);
+
+  if (!req.session.username || !req.session.password) {
+    res.status(400).send("ログインしてください");
+    return;
+  }
+
+  if (req.body.csrfToken !== req.session.csrfToken) {
+    res.status(400).send("CSRFトークンが一致しません");
+    return;
+  }
+
+  const reqBody = req.body;
+  console.log(reqBody);
+  res.send(`${req.session.username}さんが${reqBody.amount}円送金しました(${reqBody.message})`);
 });
 
 module.exports = router;
