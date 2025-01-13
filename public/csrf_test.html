@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CSRF検証</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f9;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+      }
+      form {
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+      }
+      input {
+        width: max-content;
+        margin-bottom: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+      }
+      button {
+        width: 100%;
+        padding: 10px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      button:hover {
+        background-color: #0056b3;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>CSRF検証 - 送金フォーム</h1>
+    <form id="remit" action="/csrf/remit" method="POST">
+      <label for="amount"> 金額:</label>
+      <input type="number" id="amount" name="amount" required />
+
+      <br />
+      <button type="submit">送金</button>
+    </form>
+
+    <script>
+      // CookieからTokenを取得する
+      const token = document.cookie
+        .split("; ")
+        .find((row) => row.startsWith("csrfToken="))
+        .split("=")[1];
+
+      const input = document.createElement("input");
+      input.type = "hidden";
+      input.name = "csrfToken";
+      input.value = token;
+      document.getElementById("remit").appendChild(input);
+    </script>
+  </body>
+</html>
