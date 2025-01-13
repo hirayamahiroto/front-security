@@ -45,30 +45,29 @@ router.post("/login", (req, res, next) => {
   let session = req.session;
   session.username = reqBody.username;
   session.password = reqBody.password;
-
-  // セッションにCSRFトークンを設定
   session.csrfToken = crypto.randomUUID();
   console.log(session.csrfToken);
-
-  // クッキーにCSRFトークンを設定
   res.cookie("csrfToken", session.csrfToken);
-
-  // CSRF検証ページにリダイレクト
   res.redirect("/csrf_test.html");
 });
 
 router.post("/remit", (req, res, next) => {
-  // どのようなリクエストが来ているかを確認する
+  console.log("------------リクエスト-------------");
   console.log(req.session);
   console.log(req.url);
   console.log(req.body);
+  console.log("----------------------------------");
 
   if (!req.session.username || !req.session.password) {
+    console.log("ログインしてください");
+    console.log("----------------------------------");
     res.status(400).send("ログインしてください");
     return;
   }
 
   if (req.body.csrfToken !== req.session.csrfToken) {
+    console.log("CSRFトークンが一致しません");
+    console.log("----------------------------------");
     res.status(400).send("CSRFトークンが一致しません");
     return;
   }
