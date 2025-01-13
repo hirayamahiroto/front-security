@@ -46,7 +46,6 @@ router.post("/login", (req, res, next) => {
   session.username = reqBody.username;
   session.password = reqBody.password;
   session.csrfToken = crypto.randomUUID();
-  console.log(session.csrfToken);
   res.cookie("csrfToken", session.csrfToken);
   res.redirect("/csrf_test.html");
 });
@@ -65,7 +64,7 @@ router.post("/remit", (req, res, next) => {
     return;
   }
 
-  if (req.body.csrfToken !== req.session.csrfToken) {
+  if (req.headers["x-csrf-token"] !== req.session.csrfToken) {
     console.log("CSRFトークンが一致しません");
     console.log("----------------------------------");
     res.status(400).send("CSRFトークンが一致しません");
@@ -75,6 +74,25 @@ router.post("/remit", (req, res, next) => {
   const reqBody = req.body;
   console.log(reqBody);
   res.send(`${req.session.username}さんが${reqBody.amount}円送金しました(${reqBody.message})`);
+});
+
+// 現在認証されているかを確認する。
+router.get("/check_auth", (req, res, next) => {
+  console.log(req.session);
+
+  const sessionFields = {
+    username: "sessionにユーザー名がありません",
+    password: "sessionにパスワードがありません",
+  };
+
+  for (const [field, message] of Object.entries(sessionFields)) {
+    if (!req.session[field]) {
+      console.log(message);
+      res.status(400).send(message);
+      return;
+    }
+  }
+  res.send(`${req.session.username}さんがログインしています`);
 });
 
 module.exports = router;
