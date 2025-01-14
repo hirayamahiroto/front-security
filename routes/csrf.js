@@ -53,6 +53,7 @@ router.post("/login", (req, res, next) => {
 router.post("/remit", (req, res, next) => {
   console.log("------------リクエスト-------------");
   console.log(req.session);
+  console.log(req.headers);
   console.log(req.url);
   console.log(req.body);
   console.log("----------------------------------");
@@ -64,7 +65,7 @@ router.post("/remit", (req, res, next) => {
     return;
   }
 
-  if (req.headers["x-csrf-token"] !== req.session.csrfToken) {
+  if (req.session.csrfToken !== req.cookies.csrfToken) {
     console.log("CSRFトークンが一致しません");
     console.log("----------------------------------");
     res.status(400).send("CSRFトークンが一致しません");
@@ -72,7 +73,6 @@ router.post("/remit", (req, res, next) => {
   }
 
   const reqBody = req.body;
-  console.log(reqBody);
   res.send(`${req.session.username}さんが${reqBody.amount}円送金しました(${reqBody.message})`);
 });
 
