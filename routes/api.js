@@ -30,4 +30,15 @@ router.get("/attack", (req, res, next) => {
   res.send("<script>alert('attack');</script>");
 });
 
+router.get("/redirect_constraint", (req, res) => {
+  const ALLOWED_REDIRECT = ["/open_redirect.html"];
+  if (!ALLOWED_REDIRECT.includes(req.query.url)) {
+    return res.status(400).send("Unauthorized redirect");
+  }
+  res.redirect(req.query.url);
+});
+
+router.get("/redirect_no_constraint", (req, res) => {
+  res.redirect(req.query.url);
+});
 module.exports = router;
