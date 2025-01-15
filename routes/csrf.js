@@ -83,6 +83,7 @@ router.get("/check_auth", (req, res, next) => {
   const sessionFields = {
     username: "sessionにユーザー名がありません",
     password: "sessionにパスワードがありません",
+    csrfToken: "sessionにCSRFトークンがありません",
   };
 
   for (const [field, message] of Object.entries(sessionFields)) {
@@ -92,7 +93,7 @@ router.get("/check_auth", (req, res, next) => {
       return;
     }
   }
-  res.send(`${req.session.username}さんがログインしています`);
+  res.status(200).send("ログインしています");
 });
 
 module.exports = router;

