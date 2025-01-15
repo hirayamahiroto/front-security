@@ -1,8 +1,8 @@
 const express = require("express");
 const apiRouter = require("./routes/api");
 const csrfRouter = require("./routes/csrf");
-const cors = require("cors");
-
+const corsMiddleware = require("./middleware/cros");
+const publicMiddleware = require("./middleware/public");
 const app = express();
 const port = 3000;
 
@@ -21,8 +21,8 @@ const port = 3000;
 //   next();
 // });
 // CSPなし
-app.use(express.static("public"));
-app.use("/api", cors(), apiRouter);
+app.use(express.static("public"), publicMiddleware);
+app.use("/api", corsMiddleware, apiRouter);
 app.use("/csrf", csrfRouter);
 // サーバを起動する
 app.listen(port, () => {
