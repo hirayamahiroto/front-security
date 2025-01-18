@@ -16,6 +16,7 @@ router.use(
       // ローカルでは検証を行うため、falseにしている
       secure: false,
       maxAge: 60 * 1000 * 5,
+      sameSite: "lax",
     },
   })
 );
@@ -50,7 +51,7 @@ router.post("/login", (req, res, next) => {
   session.csrfToken = crypto.randomUUID();
   console.log(session.csrfToken);
 
-  // クッキーにCSRFトークンを設定
+  // クッキーにCSRFトークンを設定;
   res.cookie("csrfToken", session.csrfToken);
 
   // CSRF検証ページにリダイレクト
